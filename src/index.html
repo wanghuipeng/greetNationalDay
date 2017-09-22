@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>优蓝陪你逛世界_优蓝网</title>
+<meta name="keywords" content=""/>
+<meta name="description" content=""/>
+<meta charset="utf-8"/>
+<meta name="viewport" content="initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no"/>
+<meta content="telephone=no" name="format-detection"/>
+<link rel="stylesheet" type="text/css" href="../static/css/main.css"/>
+<link rel="stylesheet" type="text/css" href="../static/css/style.css"/>
+<link rel="stylesheet" type="text/css" href="../static/css/greet.css"/>
+</head>
+<body>
+<!--page-wrapper-->
+<div class="page-wrapper">
+    <div class="home">
+	  <div id="banner">
+	    <div class="banner">
+	    	<img src="../static/images/home_banner.png" />
+	    </div>
+	  </div>
+	  <div class="img-box-outer">
+		  <div class="img-box">
+
+				<div class="upload-img">
+					<span class="add-icon" id="upload"></span>
+					<input type="file" title="上传头像" name="file" id="file" class="file-f" accept="image/*"  />
+				</div>
+				<div id="view" class="user-head hide"></div>
+				<!--<img src="" alt="头像" id="head_img" class="user-head hide" />-->
+
+			
+		    <img src="../static/images/text.png" class="text" />
+		    <img src="../static/images/img_footer.png" class="img-footer" />
+		  </div>
+		</div>
+        <div class="greet-form thirty-seconds">
+        	<div class="input-control">
+        	  <input type="text" placeholder="请填写您的姓名" name="name" id="friend_name" />
+        		<div class="form-g-radio sex-radio">
+                    <div class="form-g-radio-each on"><input name="gender" class="radio-input" type="radio" checked="checked" value="1" />男</div>
+                    <div class="form-g-radio-each"><input name="gender" class="radio-input" type="radio" value="2" />女</div>
+                 </div>
+        	</div> 
+        </div>
+        <img src="../static/images/waves.png" class="wave" />
+        <div class="submit-test">
+        	<button type="submit" class="testSubmit">提交测试</button>
+        </div>
+        
+    </div>
+    <!--裁剪弹出层-->
+    <div class="tui-mask pic-check hide">
+    	<div id="clipArea"></div>
+    	<ul class="btn-group clearfix">
+    		<li>
+    			<span id="clipClose">取消</span>
+    		</li>
+    		<li>
+    			<span id="clipBtn">保存</span>
+    		</li>
+    	</ul>
+    </div>
+</div>
+<!--/page-wrapper-->
+<script  src="../static/js/zepto.min.js"></script>
+<script  src="../static/js/common.js"></script> 
+<script  src="../static/js/cookie.js"></script>
+<!--图片 裁剪-->
+<script  src="../static/js/clip/hammer.min.js"></script>
+<script  src="../static/js/clip/iscroll-zoom-min.js"></script>
+<script  src="../static/js/clip/lrz.all.bundle.js"></script>
+<script  src="../static/js/clip/PhotoClip.js"></script>
+<script >
+	var baseUrl = "";
+	var pc = new PhotoClip('#clipArea', {
+	    size:[280,158],
+		outputSize: 640,
+		/*adaptive: ['80%', '59%'],*/
+		file: '#file',
+		view: '#view',
+		ok: '#clipBtn',
+		//img: 'img/mm.jpg',
+		loadStart: function() {
+			console.log('开始读取照片');
+		},
+		loadComplete: function() {
+			console.log('照片读取完成');
+		},
+		done: function(dataURL) {
+			$(".pic-check").addClass("hide");
+			$(".user-head").removeClass("hide");
+			baseUrl = dataURL;
+		},
+		fail: function(msg) {
+			alert(msg);
+		}
+	});
+
+	// 加载的图片必须要与本程序同源，否则无法截图
+	pc.load('../static/images/loading.gif');
+	
+	$("#clipClose").click(function(){
+		$(".pic-check").addClass("hide");
+	});
+
+	
+    $("#file").change(function() {
+    	$(".pic-check").removeClass("hide");
+    });
+	//免费报名
+    $(".testSubmit").click(function(){
+    	if(vaild()){
+			    //存储，IE6~7 cookie 其他浏览器HTML5本地存储
+				if (window.localStorage) {
+				    localStorage.setItem("img", baseUrl);
+				    localStorage.setItem("name", $("#friend_name").val());	
+				} else {
+				    Cookie.write("img", baseUrl);
+				    Cookie.write("name", $("#friend_name").val());
+				} 
+				window.location.href = "scene.html";
+			}
+    	}
+    );
+    //验证数据
+	function vaild() {
+        var result = true;
+        var name_reg = /((^[\u4E00-\u9FA5]{2,12}$)|(^[a-zA-Z]{3,24}$))/;
+        var name = $("#friend_name").val();
+
+        if (name == "" || name == undefined || name == null || !name_reg.test(name)) {//
+            new Message().show({'msg': '姓名为2-12位的汉字或3-24位的英文！', 'type': 1, 'position': 'bottom', "time": 2000});
+            $("#friend_name").focus();
+            result = false;
+        } else {
+            $(".form-list").find(".form-g-tip").hide();
+        }
+        return result;
+    }
+	/* 百度统计 */
+	var _hmt = _hmt || [];
+	(function() {
+	  var hm = document.createElement("script");
+	  hm.src = "//hm.baidu.com/hm.js?5b7405794a2e8b418258973889b10d88";
+	  var s = document.getElementsByTagName("script")[0]; 
+	  s.parentNode.insertBefore(hm, s);
+	})();
+	/* GIO */
+	var _vds = _vds || [];
+	window._vds = _vds;
+	var social_account = Cookie.getCookie("cookie_key_account"); 
+	(function(){
+	  _vds.push(['setAccountId', '844010516d2d97c9']);
+	  _vds.push(['setCS1', 'user_id', '<shiro:principal property="id"/>']);
+	  _vds.push(['setCS3', 'user_name', '<shiro:principal property="username"/>']);
+	  _vds.push(['setCS4', 'social_account', social_account]);
+	  (function() {
+	    var vds = document.createElement('script');
+	    vds.type='text/javascript';
+	    vds.async = true;
+	    vds.src = ('https:' == document.location.protocol ? 'https://' : 'http://') + 'dn-growing.qbox.me/vds.js';
+	    var s = document.getElementsByTagName('script')[0];
+	    s.parentNode.insertBefore(vds, s);
+	  })();
+	})();
+</script>
+</body>
+</html>
